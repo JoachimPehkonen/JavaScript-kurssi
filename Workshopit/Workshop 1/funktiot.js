@@ -1,3 +1,8 @@
+//Tehtävä 2
+    window.alert("Hello World!");
+    document.write("<h2>Hallo World! :-D</h2>");
+    console.log("Hello World!");
+
 // Tehtävä 4
 var x = 50;
 var order = 'Beer';

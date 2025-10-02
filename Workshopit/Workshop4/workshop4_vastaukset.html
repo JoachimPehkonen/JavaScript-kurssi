@@ -260,7 +260,7 @@
 			document.querySelector("#otsikko").style.color = "green";
 			document.querySelector("#otsikko").style.fontFamily = "Comic Sans MS";
 
-			sisalto.innerHTML += '<img src="https://i.redd.it/g5bpdf8smaaf1.jpeg" alt="mietteliäs apina" style="width:200px;height:auto;">';
+			sisalto.innerHTML += '<img src="https://i.redd.it/g5bpdf8smaaf1.jpeg" alt="mietteliäs apina" style="width:400px;height:auto;">';
 
 			const nappidiv = document.createElement("div");
 			sisalto.insertAdjacentElement("afterend", nappidiv);
@@ -281,6 +281,13 @@
 
 		 //Tehtävä 3
 		 function valitseAuto() {
+			auto = document.querySelector("#carimage");
+			auto.addEventListener("mouseover", () => {
+				auto.style.border = "5px solid purple";
+			});
+			auto.addEventListener("mouseout", () => {
+				auto.style.border = "none";
+			});
 			let malli = document.getElementById("mySelect").value;
 			alert(malli);
 			let kuva = document.getElementById("carimage");
@@ -292,12 +299,39 @@
 				kuva.src = "https://images.netdirector.co.uk/gforces-auto/image/upload/q_auto,c_crop,f_auto,fl_lossy,x_5,y_59,w_1682,h_946/auto-client/9f7d62235b52f013d73f6b7d0d330de0/emerald_green.png";
 			} else if (malli === "Volvo") {
 				kuva.src = "https://cdn.globalso.com/centuryautomobile/Volvo-XC90-1.jpg";
-			}		
+			}	
+
 		 }
 
 
 		 //Tehtävä 4
-		
+		 document.getElementById("Insert").addEventListener("click", () => {
+			let nimi = document.getElementById("nimi").value;
+			let tehtava = document.getElementById("tehtava").value;
+			let palkka = document.getElementById("palkka").value;
+			let virheet = [];
+			if (nimi.length <= 5) {
+				virheet.push("Nimen tulee olla yli 5 merkkiä pitkä");
+			}
+			if (tehtava.length === 0) {
+				virheet.push("Tehtävä kenttä ei saa olla tyhjä");
+			}
+			if (isNaN(palkka) || palkka <= 0) {
+				virheet.push("Palkka kenttä pitää olla yli 0 ja sen tulee sisältää vain numeroita");
+			}
+			if (virheet.length > 0) {
+				alert(virheet.join("\n"));
+			} else {
+				let table = document.getElementById("data").getElementsByTagName('tbody')[0];
+				let newRow = table.insertRow();
+				let cell1 = newRow.insertCell(0);
+				let cell2 = newRow.insertCell(1);
+				let cell3 = newRow.insertCell(2);
+				cell1.innerHTML = nimi;
+				cell2.innerHTML = tehtava;
+				cell3.innerHTML = palkka;
+			}
+		 });
 
 	</script>
 

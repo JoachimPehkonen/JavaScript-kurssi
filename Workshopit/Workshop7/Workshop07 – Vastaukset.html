@@ -19,7 +19,7 @@
 		ymmärtää sellaisenaan. Muunnoksia ei tarvita sen käyttämiseen.</p>
 	<p>
 		<button>Näytä vain etu- ja sukunimi</button>
-		<button>Näytä kaikki tiedot</button>
+		<button >Näytä kaikki tiedot</button>
 	</p>
 	<p>Kokeillaan seuraavaa. Voit luoda uuden JSON-datasetin JavaScript-koodissasi alla olevan mallin mukaisesti. Luo
 		sitten funktiot, jotka suoritetaan, kun painikkeita klikataan.</p>
@@ -69,7 +69,7 @@
 		Klikkaa nähdäksesi vastauksen.</p>
 	<ul>
 		<li>Kehitä ensin sovellus, joka näyttää raakatiedot säästä (lämpötila, pilvisyys, ilmankosteus) tietyssä
-			kaupungissa, kun painiketta klikataan. <button>Hae data</button></li>
+			kaupungissa, kun painiketta klikataan. <button id="search">Hae data</button></li>
 		<li>Kun tämä toimii, parsi data ja tulosta se diviin.</li>
 		<li>Tämän jälkeen lisää onchange-tapahtuma pudotusvalikkoon, jotta käyttäjä voi valita, minkä kaupungin tiedot
 			näytetään listalta.</li>
@@ -83,19 +83,109 @@
 		<option value="Rome">Rooma</option>
 		<option value="New York">New York</option>
 	</select>
-	<p>Tai kirjoita hakusana: <input id="citysearch" /><button id="search">Hae</button></p>
+	<p>Tai kirjoita hakusana: <input id="citysearch" /><button>Hae</button></p>
 	<div id="weatherdata">Säätiedot näkyvät täällä.</div>
 
 	<script>
 
-	// Tehtävä 1 !!KESKEN!!
+	// Tehtävä 1
+
+	//Nappi 1
 	document.querySelectorAll("button")[0].onclick = function() {
     var text = '{ "employees" : [' +
 			'{ "firstName":"John" , "lastName":"Doe" },' +
 			'{ "firstName":"Anna" , "lastName":"Smith" },' +
 			'{ "firstName":"Peter" , "lastName":"Jones" } ]}';
-} 
+	var obj = JSON.parse(text);
+	var result = "";
+	for (var i = 0; i < obj.employees.length; i++) {
+		result += obj.employees[i].firstName + " " + obj.employees[i].lastName + "<br>";
+	}
+	document.getElementById("jsondata").innerHTML = result;
 
+} 
+	//Nappi 2
+	document.querySelectorAll("button")[1].onclick = function() {
+  var text = '{ "employees" : [' +
+    '{ "firstName":"John" , "lastName":"Doe" },' +
+    '{ "firstName":"Anna" , "lastName":"Smith" },' +
+    '{ "firstName":"Peter" , "lastName":"Jones" } ]}';
+  var obj = JSON.parse(text);
+
+  var out = "";
+  for (var i = 0; i < obj.employees.length; i++) {
+    var e = obj.employees[i];
+    for (var key in e) {
+      out += key + ": " + e[key] + "<br>";
+    }
+    out += "<br>";
+  }
+  document.getElementById("jsondata").innerHTML = out;
+};
+
+
+	// Tehtävä 2
+
+	//Nappi 1
+	document.querySelectorAll("button")[2].onclick = function() {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				document.getElementById("rawdata").innerHTML = this.responseText;
+			}
+		};
+		xhttp.open("GET", "https://www.omdbapi.com/?s=star+wars&apikey=cbbc6750", true);
+		xhttp.send();
+		}
+	
+	//Nappi 2
+	document.querySelectorAll("button")[3].onclick = function() {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				var response = JSON.parse(this.responseText);
+				var out = "<table><tr><th>Title</th><th>Year</th><th>Poster</th></tr>";
+				for (var i = 0; i < response.Search.length; i++) {
+					out += "<tr><td>" + response.Search[i].Title + "</td><td>" + response.Search[i].Year + "</td><td><img src='" + response.Search[i].Poster + "' alt='Poster' height='100'></td></tr>";
+				}
+				out += "</table>";
+				document.getElementById("rawdata").innerHTML = out;
+			}
+		};
+		xhttp.open("GET", "https://www.omdbapi.com/?s=star+wars&apikey=cbbc6750", true);
+		xhttp.send();
+	}
+
+	// Tehtävä 3
+	document.querySelector("button#search").onclick = function() {
+		var city = document.getElementById("citysearch").value;
+		fetchWeatherData(city);
+	};
+	document.getElementById("city").onchange = function() {
+		var city = this.value;
+		fetchWeatherData(city);
+	};
+	function fetchWeatherData(city) {
+		var apiKey = "b4d9ee1bc9ca273b100f0093ce19a4c5";
+		var url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=metric&mode=JSON&APPID=" + apiKey;
+
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				var response = JSON.parse(this.responseText);
+				var out = "<h3>Sää " + response.name + "</h3>";
+				out += "<p>Lämpötila: " + response.main.temp + " °C</p>";
+				out += "<p>Pilvisyys: " + response.weather[0].description + "</p>";
+				out += "<p>Ilmankosteus: " + response.main.humidity + " %</p>";
+				document.getElementById("weatherdata").innerHTML = out;
+			}
+		};
+		xhttp.open("GET", url, true);
+		xhttp.send();
+	}
+
+
+	
 
 
 	</script>
